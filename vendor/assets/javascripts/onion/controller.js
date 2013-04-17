@@ -161,7 +161,7 @@ define([
 
         this.children[childId][itemId] = child
 
-        this.insertChild(child, childId)
+        this.insertChild(child, childId, itemId)
         return child
       },
 
@@ -212,8 +212,8 @@ define([
         }
       },
 
-      insertChild: function(child, id){
-        this.view.insertChild(child.view, id)
+      insertChild: function(child, id, itemId){
+        this.view.insertChild(child.view, id, itemId)
       },
 
       // "Private"

@@ -56,6 +56,20 @@ define([
 
       find: function (selector) {
         return $(this.dom()).find(selector)
+      },
+
+      insertChild: function(childView, id, itemId){
+        if (childView.appendTo) {
+          var container = this.find('[data-child]').filter(function () {
+            return $(this).data('child').match(new RegExp('\\b' + id + '\\b'))
+          })
+          if (itemId) {
+            container = container.children('[data-child-item="' + itemId + '"]')
+          }
+          if(container.length === 0) container = this.$dom()
+          childView.appendTo(container)
+        }
+        return this
       }
 
     })
