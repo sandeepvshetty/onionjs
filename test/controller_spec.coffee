@@ -315,3 +315,26 @@ describe "Controller", ->
         assert.isTrue( child1.destroy.called )
         assert.isTrue( child2.destroy.called )
         assert.isTrue( child.destroy.called )
+
+    describe "ready", ->
+      view = null
+
+      class TestView
+        setDom: ->
+          this.domWasSet = true
+
+      beforeEach ->
+        view = new TestView()
+        controller = new Controller({}, {view})
+
+      it "is called after the view calls setDom()", ->
+        readyCalled = false
+        domWasSet = false
+        controller.ready = ->
+          readyCalled = true
+          domWasSet = view.domWasSet
+
+        view.setDom('body')
+
+        expect( readyCalled ).to.eql(true)
+        expect( domWasSet ).to.eql(true)

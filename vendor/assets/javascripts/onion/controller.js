@@ -4,12 +4,14 @@ define([
     'onion/class_declarations',
     'onion/extend',
     'onion/type',
-    'onion/subscriber'
+    'onion/subscriber',
+    'onion/decorator'
   ], function(
     classDeclarations,
     extend,
     Type,
-    subscriber
+    subscriber,
+    decorator
 ) {
 
   var isFunction = function (object) {
@@ -34,6 +36,7 @@ define([
 
       // View
       this.view = opts.view || this.initView()
+      this.__setUpViewDecorators__()
       this.__setUpViewListeners__()
 
       // Children
@@ -113,6 +116,10 @@ define([
       // Views
 
       initView: function () {
+        // Override me
+      },
+
+      ready: function () {
         // Override me
       },
 
@@ -245,6 +252,16 @@ define([
 
       __isModelListenerEnabled__: function (modelName, eventName) {
         return !this.__disabledModelListeners__[toKey(modelName, eventName)]
+      },
+
+      __setUpViewDecorators__: function () {
+        if (!this.view) {
+          return
+        }
+        var self = this
+        decorator.after(this.view, 'setDom', function () {
+          self.ready()
+        })
       },
 
       __setUpViewListeners__: function () {
