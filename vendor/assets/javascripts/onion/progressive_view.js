@@ -64,7 +64,10 @@ define([
             return $(this).data('child').match(new RegExp('\\b' + id + '\\b'))
           })
           if (itemId) {
-            container = container.children('[data-child-item="' + itemId + '"]')
+            var item = container.children('[data-child-item="' + itemId + '"]')
+            if (item.length != 0) {
+              container = item
+            }
           }
           if(container.length === 0) container = this.$dom()
           childView.appendTo(container)
