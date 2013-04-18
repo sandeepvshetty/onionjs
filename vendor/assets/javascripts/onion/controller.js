@@ -136,10 +136,16 @@ define([
         return this
       },
 
+      anchorAt: function(element){
+        this.view.anchorAt(element)
+        return this
+      },
+
       // Children
 
-      setChild: function(id, child, models, options){
-        if( isFunction(child) ) child = this.__newChild__(child, models, options)
+      setChild: function(id, child, models, opts){
+        opts = opts || {anchor: false}
+        if( isFunction(child) ) child = this.__newChild__(child, models, opts)
 
         var childId, itemId
         if (Array.isArray(id)) {
@@ -161,7 +167,7 @@ define([
 
         this.children[childId][itemId] = child
 
-        this.insertChild(child, childId, itemId)
+        this.insertChild(child, childId, itemId, opts.anchor)
         return child
       },
 
@@ -212,8 +218,8 @@ define([
         }
       },
 
-      insertChild: function(child, id, itemId){
-        this.view.insertChild(child.view, id, itemId)
+      insertChild: function(child, id, itemId, anchor){
+        this.view.insertChild(child.view, id, itemId, anchor)
       },
 
       // "Private"

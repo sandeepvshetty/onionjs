@@ -5,6 +5,7 @@ module Onionjs
       app_path = opts[:app_path] || "#{app_name}/#{app_name}_controller"
       id = (opts[:id] || "app").html_safe
       pre_require = opts[:pre_require]
+      action = opts[:anchor] ? 'anchorAt' : 'appendTo'
 
       requires = [app_path] + Array.wrap(pre_require)
       controller_name = "#{app_name}_controller".camelize
@@ -16,7 +17,7 @@ module Onionjs
           require(#{requires.to_json}, function(#{controller_name}){
             window.app = new #{controller_name}({
               preloadedData: #{preloaded_data.to_json}
-            }).appendTo('##{id}')
+            }).#{action}('##{id}')
           })
         </script>
       )

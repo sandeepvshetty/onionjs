@@ -95,7 +95,12 @@ define([
       },
 
       appendTo: function (element) {
-        $(this.dom()).appendTo(element)
+        this.$dom().appendTo(element)
+        return this
+      },
+
+      anchorAt: function (element) {
+        this.setDom(element)
         return this
       },
 
@@ -108,13 +113,24 @@ define([
         return this
       },
 
-      insertChild: function(childView, id){
+      insertChild: function(childView, id, itemId, anchor){
         if (childView.appendTo) {
           var container = this.find('[data-child]').filter(function () {
             return $(this).data('child').match(new RegExp('\\b' + id + '\\b'))
           })
+          if (itemId) {
+            var item = container.children('[data-child-item="' + itemId + '"]')
+            if (item.length != 0) {
+              container = item
+            }
+          }
           if(container.length === 0) container = this.$dom()
-          childView.appendTo(container)
+          if (anchor) {
+            childView.anchorAt(container)
+          }
+          else {
+            childView.appendTo(container)
+          }
         }
         return this
       },
