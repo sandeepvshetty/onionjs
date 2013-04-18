@@ -133,7 +133,6 @@ define([
 
       appendTo: function(element){
         this.view.appendTo(element)
-        return this
       },
 
       anchorAt: function(element){
