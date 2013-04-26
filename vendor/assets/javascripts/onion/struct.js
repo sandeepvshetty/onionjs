@@ -131,6 +131,7 @@ define([
         this.prototype[setterMethodName(name)] = function(items){
           this[name]().set(items)
           this.emit('change:' + name)
+          this.emit('change')
         }
 
         return this
