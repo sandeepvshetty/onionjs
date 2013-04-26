@@ -129,8 +129,9 @@ define([
 
         // Writer
         this.prototype[setterMethodName(name)] = function(items){
+          oldItems = this[name]().toArray()
           this[name]().set(items)
-          this.emit('change:' + name)
+          this.emit('change:' + name, {from: oldItems, to: Array.prototype.slice.call(items)})
           this.emit('change')
         }
 
