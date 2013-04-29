@@ -136,7 +136,12 @@ define([
       },
 
       anchorAt: function(element){
-        this.view.anchorAt(element)
+        if (this.view) {
+          this.view.anchorAt(element)
+        }
+        else {
+          throw new Error(this.constructor.name+" does not have a view. Please provide one before calling `anchorAt()`")
+        }
         return this
       },
 
