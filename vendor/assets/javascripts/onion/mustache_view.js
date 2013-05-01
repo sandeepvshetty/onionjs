@@ -69,7 +69,7 @@ define([
       },
 
       render: function (object) {
-        var html = this.renderTemplate(this.template(), object)
+        var html = this.renderTemplate(this.template(), object).trim()
         this.setDom($(html)[0])
         return this
       },
