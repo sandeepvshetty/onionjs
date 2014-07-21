@@ -2,9 +2,10 @@ if(typeof define!=='function'){var define=require('amdefine')(module);}
 
 define([
   'onion/type',
+  'onion/collection',
   'onion/event_emitter',
   'onion/has_uuid'
-], function (Type, eventEmitter, hasUUID) {
+], function (Type, Collection, eventEmitter, hasUUID) {
 
   function setterMethodName(attributeName){
     return 'set' + attributeName.replace(/./, function(ch){ return ch.toUpperCase() })
@@ -37,24 +38,30 @@ define([
         this.__attrs__[attr] = value
       },
 
+      __writeCollection__: function(collection, items) {
+        this[collection]().set(items)
+      },
+
+      __write__: function(key, value) {
+        if(this.constructor.attributeNames.indexOf(key) != -1){
+          this.__writeAttribute__(key, value)
+        } else if (this.constructor.collectionNames.indexOf(key) != -1){
+          this.__writeCollection__(key, value)
+        } else {
+          throw new Error("unknown attribute or collection" + key + " for " + this.constructor.name)
+        }
+      },
+
       set: function(attr, value) {
         var attrs = {}
         attrs[attr] = value
-        var changes = this.__collectChanges__(attrs)
-        this.__writeAttribute__(attr, value)
-        this.__notifyChanges__(changes)
+        this.setAttrs(attrs)
         return this
       },
 
       setAttrs: function(attrs) {
         var changes = this.__collectChanges__(attrs)
-        for(key in attrs){
-          if(this.constructor.attributeNames.indexOf(key) != -1){
-            this.__writeAttribute__(key, attrs[key])
-          } else {
-            throw new Error("unknown attribute " + key + " for " + this.constructor.name)
-          }
-        }
+        for(key in attrs) { this.__write__(key, attrs[key]); }
         this.__notifyChanges__(changes)
       },
 
@@ -74,7 +81,7 @@ define([
         var attr
         for (attr in attrs) {
           newValue = attrs[attr]
-          oldValue = this.__readAttribute__(attr)
+          oldValue = this[attr]()
           if(newValue != oldValue) {
             changes[attr] = {from: oldValue, to: newValue}
           }
@@ -127,6 +134,30 @@ define([
           this.attributeNames.push(arguments[i])
         }
         return this
+      },
+
+      collection: function (name, options) {
+        if (!options) options = {};
+        if (!this.collectionNames) this.collectionNames = []
+
+        var privateName = '__' + name + '__',
+            type        = options[type] || Collection;
+
+        this.prototype[name] = function () {
+          if (!this[privateName]) {
+            this[privateName] = new type();
+            if (options.orderBy) {
+              this[privateName].orderBy(options.orderBy);
+            }
+          }
+          return this[privateName];
+        };
+
+        this.__createWriter__(name);
+
+        this.collectionNames.push(name);
+
+        return this;
       },
 
       decorateWriter: function (attribute, decorator, options) {
