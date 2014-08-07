@@ -22,7 +22,7 @@ define(function () {
         addItemChild: function (model) {
           var extraModels = {}
           extraModels[itemName] = model
-          this.setChild([collectionName, model.mid()], itemController, extraModels)
+          this.setChild([collectionName, model.uuid()], itemController, extraModels)
         },
 
         removeItemChildren: function (models) {
@@ -30,7 +30,7 @@ define(function () {
         },
 
         removeItemChild: function (model) {
-          this.destroyChild([collectionName, model.mid()])
+          this.destroyChild([collectionName, model.uuid()])
         }
 
       })
