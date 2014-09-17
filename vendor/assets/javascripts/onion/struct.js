@@ -115,7 +115,7 @@ define([
           };
         }
         if (Object.keys(changes).length > 0) {
-          this.emit('change')
+          this.emit('change', changes)
         }
         return changes
       },
