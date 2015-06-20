@@ -2,7 +2,7 @@ module Onionjs
   class Engine < Rails::Engine
 
     initializer "onionjs" do |app|
-      app.assets.paths << app.root.join('app/assets/modules')
+      app.config.assets.paths << app.root.join('app/assets/modules')
 
       # If requirejs-rails is present, include mustache files in
       # rake assets:precompile task (which uses r.js)
