@@ -87,6 +87,10 @@ define([
         copy(this.__attrs__, attrs)
       },
 
+      toJSON: function () {
+        return copy({}, this.__attrs__);
+      },
+
       __collectChanges__: function (attrs) {
         var changes = {}
         var newValue, oldValue
