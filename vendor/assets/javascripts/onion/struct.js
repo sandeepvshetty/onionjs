@@ -55,12 +55,14 @@ define([
             value = decorator.func(value)
           }
         }
-        if(this.constructor.attributeNames.indexOf(key) != -1){
+        if(this.constructor.attributeNames &&
+           this.constructor.attributeNames.indexOf(key) != -1){
           this.__writeAttribute__(key, value)
-        } else if (this.constructor.collectionNames.indexOf(key) != -1){
+        } else if (this.constructor.collectionNames &&
+                   this.constructor.collectionNames.indexOf(key) != -1){
           this.__writeCollection__(key, value)
         } else {
-          throw new Error("unknown attribute or collection" + key + " for " + this.constructor.name)
+          throw new Error("unknown attribute or collection '" + key + "' for " + this.constructor.name)
         }
       },
 
@@ -96,8 +98,8 @@ define([
         var newValue, oldValue
         var attr
         for (attr in attrs) {
+          oldValue = this[attr] ? this[attr]() : undefined
           newValue = attrs[attr]
-          oldValue = this[attr]()
           if(newValue != oldValue) {
             changes[attr] = {from: oldValue, to: newValue}
           }
