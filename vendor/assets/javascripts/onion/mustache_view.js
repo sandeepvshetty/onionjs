@@ -124,11 +124,11 @@ define([
               container = item
             }
           }
-          if(container.length === 0) container = this.$dom()
           if (anchor) {
+            if (container.length === 0) return;
             childView.anchorAt(container)
-          }
-          else {
+          } else {
+            if (container.length === 0) container = this.$dom()
             childView.appendTo(container)
           }
         }
