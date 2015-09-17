@@ -15,17 +15,19 @@ define(function(){
       var args = Array.prototype.slice.call(arguments, 1)
       if(subscriptions){
         subscriptions.forEach(function(sub){
-          sub.callback.apply(this, args)
+          var context = sub.context || this
+          sub.callback.apply(context, args)
         })
       }
     },
 
-    on: function(event, callback){
+    on: function(event, callback, context){
       var channels = this.channels()
       if(!channels[event]){ channels[event] = [] }
       channels[event].push({
-        event: event,
-        callback: callback
+        event:    event,
+        callback: callback,
+        context:  context
       })
       return this
     },
@@ -39,11 +41,15 @@ define(function(){
       return this.on(event, autodisablingCallback)
     },
 
-    off: function(event, callback){
+    off: function(event, callback, context){
       var channels = this.channels()
       if(channels[event]){
         channels[event] = channels[event].reduce(function(channel, sub){
-          if(! (sub.event == event && sub.callback == callback) ) {
+          if(!(
+            sub.event == event &&
+            (callback == null || sub.callback == callback) &&
+            (context  == null || sub.context  == context)
+          )) {
             channel.push(sub)
           }
           return channel
