@@ -179,6 +179,12 @@ define([
         return this.map(function(item){ return item })
       },
 
+      isEqualTo: function(other) {
+        return other && this.length === other.length && this.every(function(item, index) {
+          return item === other[index]
+        });
+      },
+
       orderBy: function(comparator) {
         this.__comparator__ = comparator
         this.order()

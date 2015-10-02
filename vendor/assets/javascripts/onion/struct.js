@@ -55,11 +55,9 @@ define([
             value = decorator.func(value)
           }
         }
-        if(this.constructor.attributeNames &&
-           this.constructor.attributeNames.indexOf(key) != -1){
+        if(this.__hasAttribute__(key)) {
           this.__writeAttribute__(key, value)
-        } else if (this.constructor.collectionNames &&
-                   this.constructor.collectionNames.indexOf(key) != -1){
+        } else if (this.__hasCollection__(key)) {
           this.__writeCollection__(key, value)
         } else {
           throw new Error("unknown attribute or collection '" + key + "' for " + this.constructor.name)
@@ -93,15 +91,32 @@ define([
         return copy({}, this.__attrs__);
       },
 
+      __hasAttribute__: function (name) {
+        return this.constructor.attributeNames &&
+               this.constructor.attributeNames.indexOf(name) != -1
+      },
+
+      __hasCollection__: function (name) {
+        return this.constructor.collectionNames &&
+               this.constructor.collectionNames.indexOf(name) != -1
+      },
+
       __collectChanges__: function (attrs) {
         var changes = {}
         var newValue, oldValue
         var attr
         for (attr in attrs) {
-          oldValue = this[attr] ? this[attr]() : undefined
+          oldValue = this[attr] && this[attr]()
           newValue = attrs[attr]
-          if(newValue != oldValue) {
-            changes[attr] = {from: oldValue, to: newValue}
+
+          if (this.__hasCollection__(attr)) {
+            if (!oldValue && newValue || oldValue && !oldValue.isEqualTo(newValue)) {
+              changes[attr] = {from: oldValue, to: newValue}
+            }
+          } else {
+            if(newValue != oldValue) {
+              changes[attr] = {from: oldValue, to: newValue}
+            }
           }
         }
         return changes
