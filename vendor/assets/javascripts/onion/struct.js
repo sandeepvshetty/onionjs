@@ -52,7 +52,7 @@ define([
         if (decorator) {
           var ignoreDecorator = value === null && decorator.options.includeNull != true
           if (!ignoreDecorator) {
-            value = decorator.func(value)
+            value = decorator.func.call(this, value)
           }
         }
         if(this.__hasAttribute__(key)) {
