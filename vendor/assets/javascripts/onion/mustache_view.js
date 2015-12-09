@@ -4,10 +4,10 @@ define([
   'onion/class_declarations',
   'onion/event_emitter',
   'onion/extend',
-  'onion/vendor/mustache',
   'onion/type',
-  'jquery'
-], function(classDeclarations, eventEmitter, extend, Mustache, Type, $){
+  'jquery',
+  'mustache'
+], function(classDeclarations, eventEmitter, extend, Type, $, Mustache){
 
   return Type.sub('MustacheView')
 
